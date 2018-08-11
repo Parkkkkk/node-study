@@ -23,13 +23,13 @@ http.createServer((req, res) => {
         res.writeHead ( 302 , {
             Location : '/',
             'Set-Cookie' : `name=${encodeURIComponent(name)};
-Expires = ${expires.toGMTString()}; HttpOnly; Path=/`,
+            Expires = ${expires.toGMTString()}; HttpOnly; Path=/`,
         });
         res.end();
     } else if (cookies.name) {
         res.writeHead(200, { 'Content-Type' : 'text/html; charset=utf-8'});
         res.end(`${cookies.name}님 안녕하세요`);
-    } else {
+    } else {    
         fs.readFile('./server4.html', (err, data) => {
             if (err) {
                 throw err;
