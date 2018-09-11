@@ -25,7 +25,7 @@ block content
           .twit-author= twit.user.nick
           -const follow = user && user.Followings.map(f => f.id).includes(twit.user.id);
           if user && user.id !== twit.user.id && !follow
-            button.twit-follow 팔로우하기
+            button.twit-follow 팔로우 하기
           .twit-content= twit.content
           if twit.img
             .twit-img
