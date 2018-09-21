@@ -9,7 +9,7 @@ const { Domain, User, Post, Hashtag } = require('../models');
 const router = express.Router();
 
 
-router.use(async (req, res, next) => {
+router.use('/api' , async (req, res, next) => {
     const domain = await Domain.find({
         where : {host : url.parse(req.get('origin')).host},
     });
