@@ -1,4 +1,5 @@
-PractiseCode/**/node_modules/
 
+PractiseCode/**/.env
+PractiseCode/**/node_modules/
 PractiseCode/**/*.json
 
