@@ -34,6 +34,7 @@ app.set('port', process.env.PORT || 8005);
 
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname,'public')));
+app.use('/gif', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -49,6 +50,7 @@ app.use(session ({
     },
 }));
 
+//해당 유저의 세션 아이디를 컬러이름 (#00000) 으로 바꿔주는것 ColorHash 
 
 app.use((req, res, next) => {
     if(!req.session.color) {
@@ -80,3 +82,5 @@ app.listen(app.get('port', () => {
 }));
 
 webSocket(server, app, sessionMiddleware);
+
+
