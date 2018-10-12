@@ -101,6 +101,11 @@ router.post('room/:id/chat', async (req, res, next) => {
   }
 });
 
+
+
+
+
+
 fs.readdir('uploads', (error) => {
   if (error) {
     console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');

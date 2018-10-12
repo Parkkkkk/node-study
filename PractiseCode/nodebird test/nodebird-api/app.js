@@ -47,6 +47,7 @@ app.use('/v2', v2);
 app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
+
 app.use((req, res, next) => {
     const err = new Error('Not Found');
     err.status = 404;
