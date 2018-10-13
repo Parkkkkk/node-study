@@ -103,4 +103,46 @@ router.get('/post/hashtag/:title', verifyToken, apiLimiter, async (req, res) => 
     }
 });
 
+router.get('/following', verifyToken, async ( req, res ) => {
+    try {
+        const user = await User.find({ where : { id : id.decoded.id}});
+        const following = await user.getFollowings({ attribute : ['id, nick']});
+        return res.json({
+            code : 200,
+            following
+        })
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({
+            code : 500,
+            message : '서버 에러'
+        });
+    }
+    }
+);
+
+
+router.get('/follower', verifyToken, async( req, res ) => {
+    try {
+        const user = await User.find({ where : { id : req.decoded.id }});
+        const follower = await user.getFollowers({ attribute : ['id, nick']});
+        return res.json({
+            code : 200,
+            follower
+        })
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({
+            code : 500,
+            message : '서버 에러'
+        });
+    }
+    }
+);
+
+
+
+
+
+
 module.exports = router;

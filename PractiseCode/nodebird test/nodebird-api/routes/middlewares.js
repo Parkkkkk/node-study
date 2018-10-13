@@ -36,8 +36,18 @@ exports.verifyToken = (req, res, next) => {
     }
 };
 
+
+/**
+ * windowMS : 기준 시간
+ * max : 허용 횟수
+ * delayMs : 호출 간격
+ * handler : 제한 초과시 콜백 함수 
+ */
+
+
+
 exports.apiLimiter = new RateLimit ({
-    windoeMs : 60 * 1000,
+    windowMs : 60 * 1000,
     max : 1,
     delayMs : 0,
     handler(req, res) {
@@ -47,6 +57,18 @@ exports.apiLimiter = new RateLimit ({
         });
     },
 });
+
+exports.premiumApiLimiter = new RateLimit ({
+    windowMs : 60 * 1000,
+    max : 10,
+    delayMs : 0,
+    handler(req, res) {
+        res.status(this.statusCode).json({
+            code : this.statusCode,
+            mesaage : '1분에 열 번만 요청할 수 있습니다.'
+        })
+    }
+})
 
 
 exports.deprecated = (req, res) => {
