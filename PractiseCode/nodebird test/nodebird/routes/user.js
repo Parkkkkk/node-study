@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { isLoggedIn } = require('/middlewares');
+const { isLoggedIn } = require('./middlewares');
 const { User } = require('../models');
 
 const router = express.Router();
@@ -15,3 +15,5 @@ router.post('/:id/follow', isLoggedIn , async (req, res, next) => {
         next(error);
     }
 });
+
+module.exports = router;

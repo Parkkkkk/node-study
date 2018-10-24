@@ -61,7 +61,7 @@ router.get('/following' , async ( req, res , next) => {
 
 router.get('/follower' , async ( req, res ,next )=> {
     try {
-        const result = await request(req,'/follwer');
+        const result = await request( req ,'/follwer');
         res.json(result.data);
     } catch(error) {
         if(error.code) {

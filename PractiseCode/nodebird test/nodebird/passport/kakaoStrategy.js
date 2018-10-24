@@ -13,7 +13,7 @@ module.exports = (passport) => {
                 done(null, exUser);
             } else {
                 const newUser = await User.create ({
-                    email : profiel._json && profile._json.kaccount_emil,
+                    email : profile._json && profile._json.account_email,
                     nick : profile.displayName,
                     snsId : profile.id,
                     provider : 'kakao',

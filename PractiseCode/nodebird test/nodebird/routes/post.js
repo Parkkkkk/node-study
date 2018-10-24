@@ -5,7 +5,6 @@ const fs = require('fs');
 
 const { Post, Hashtag, User } = require ('../models');
 const { isLoggedIn } = require('./middlewares');
-const { Post, User } =require('../models');
 
 
 const router = express.Router();
@@ -13,7 +12,7 @@ const router = express.Router();
 /**
  *  해당 폴더가 존재하지 않는다면 fs모듈을 이용하여 폴더를 생성
  */
-fs.readdir('uploads', ( error) => {
+fs.readdir('uploads', (error) => {
     if(error) {
         console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
         fs.mkdirSync('uploads');
