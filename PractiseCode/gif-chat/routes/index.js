@@ -57,9 +57,7 @@ router.get('/room/:id', async (req, res, next) => {
       req.flash('roomError', '허용 인원이 초과하였습니다.');
       return res.redirect('/');
     }
-
-    const chats = await Chat.find({ room : room_id }).sort('createdAt');
-
+    const chats = await Chat.find({ room: room._id }).sort('createdAt');
     return res.render('chat', {
       room,
       title: room.title,
@@ -85,26 +83,22 @@ router.delete('/room/:id', async (req, res, next) => {
     next(error);
   }
 });
-router.post('room/:id/chat', async (req, res, next) => {
+
+router.post('/room/:id/chat', async (req, res, next) => {
   try {
-    const chat = new Chat ({
-      room : req.params.id,
-      user : req.session.color,
-      chat : req.body.chat,
+    const chat = new Chat({
+      room: req.params.id,
+      user: req.session.color,
+      chat: req.body.chat,
     });
     await chat.save();
-    req.app.get('io').of('/chat').to(req.param.is).emit('chat', chat);
+    req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
     res.send('ok');
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     next(error);
   }
 });
-
-
-
-
-
 
 fs.readdir('uploads', (error) => {
   if (error) {
@@ -112,29 +106,27 @@ fs.readdir('uploads', (error) => {
     fs.mkdirSync('uploads');
   }
 });
-
-const upload = multer ({
-  storage : multer.diskStorage ({
-    destination ( req, file, cb) {
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
       cb(null, 'uploads/');
     },
     filename(req, file, cb) {
       const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + new Date().varlueOf() + ext);
+      cb(null, path.basename(file.originalname, ext) + new Date().valueOf() + ext);
     },
   }),
-  limits : { fileSize : 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 },
 });
-
-router.post('/room/:id/gif', upload.single('gif'), async(req, res, next) => {
+router.post('/room/:id/gif', upload.single('gif'), async (req, res, next) => {
   try {
-    const chat = new Chat ({
-      room : req.params.id,
-      user : req.session.color,
-      gif : req.file.filename,
+    const chat = new Chat({
+      room: req.params.id,
+      user: req.session.color,
+      gif: req.file.filename,
     });
     await chat.save();
-    req.app.get('io').of('/chat').to(req.param.id).emit('chat', chat);
+    req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
     res.send('ok');
   } catch (error) {
     console.error(error);
