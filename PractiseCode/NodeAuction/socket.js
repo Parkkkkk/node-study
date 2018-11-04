@@ -1,4 +1,7 @@
-const io = require('socket.io')(server, { path : '/socket.io'});
+const SocketIO = require('socket.io')
+
+module.exports = (server,app) => {
+    const io = SocketIO(server, { path : '/socket.io'});
 
 app.set('io', io);
 
@@ -11,3 +14,4 @@ io.on('connection', (socket) => {
         socket.leave(roomId);
     });
 });
+};
