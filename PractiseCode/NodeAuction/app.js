@@ -13,10 +13,13 @@ const {sequelize} = require('./models');
 const passportConfig = require('./passport');
 const sse = require('./sse');
 const webSocket = require('./socket');
+const checkAutcion = require('./checkAuction');
 
 const app = express();
 sequelize.sync();
 passportConfig(passport);
+checkAutcion();
+
 
 const sessionMiddleware = session ({
     resave : false,
