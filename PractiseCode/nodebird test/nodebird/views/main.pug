@@ -26,6 +26,8 @@ block content
           -const follow = user && user.Followings.map(f => f.id).includes(twit.user.id);
           if user && user.id !== twit.user.id && !follow
             button.twit-follow 팔로우 하기
+          else if user && user.id !== twit.user.id && follow
+            button.twit-unfollow 팔로우 끊기
           .twit-content= twit.content
           if twit.img
             .twit-img
@@ -74,3 +76,27 @@ block content
         }
       });
     });
+    [].forEach.call(document.querySelectorAll('.twit-unfollow'), function (tag) {
+      tag.addEventListener('click', function () {
+        var isLoggedIn = document.querySelector('#my-id');
+        if (isLoggedIn) {
+          var userId = tag.parentNode.querySelector('.twit-user-id').value;
+          var myId = isLoggedIn.value;
+          if (userId !== myId) {
+            if (confirm('팔로잉을 끊으겠습니까?')) {
+              var xhr = new XMLHttpRequest();
+              xhr.onload = function () {
+                if (xhr.status === 200) {
+                  location.reload();
+                } else {
+                  console.error(xhr.responseText);
+                }
+              };
+              xhr.open('POST', '/user/' + userId + '/unfollow');
+              xhr.send();
+            }
+          }
+        }
+      });
+    });
+    
