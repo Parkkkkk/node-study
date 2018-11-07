@@ -24,6 +24,11 @@ block content
           input.twit-id(type='hidden' value=twit.id)
           .twit-author= twit.user.nick
           -const follow = user && user.Followings.map(f => f.id).includes(twit.user.id);
+          -const like = user && twit && twit.Liker.map(l => l.id).includes(user.id);
+          if user && !like
+            button.twit-Like 좋아요ß
+          else if user && like
+            button.twit-unLike 좋아요 취소
           if user && user.id !== twit.user.id && !follow
             button.twit-follow 팔로우 하기
           else if user && user.id !== twit.user.id && follow
@@ -50,7 +55,7 @@ block content
           }
         };
         xhr.open('POST', '/post/img');
-        xhr.send(formData);
+        xhr.send(formData); 
       });
     }
     [].forEach.call(document.querySelectorAll('.twit-follow'), function (tag) {
@@ -99,4 +104,40 @@ block content
         }
       });
     });
-    
+    [].forEach.call(document.querySelectorAll('.twit-Like'), function (tag) {
+    tag.addEventListener('click', function () {
+       var isLoggedIn = document.querySelector('#my-id');
+         var twitId = tag.parentNode.querySelector('.twit-id').value;
+         if (isLoggedIn) {
+            var xhr = new XMLHttpRequest();
+             xhr.onload = function () {
+               if (xhr.status === 200) {
+                 location.reload();
+               } else {
+                 console.error(xhr.responseText);
+               }
+             };
+             xhr.open('POST', '/post/' + twitId + '/Like');
+             xhr.send();
+           }
+         })
+       });
+    [].forEach.call(document.querySelectorAll('.twit-unLike'), function (tag) {
+    tag.addEventListener('click', function () {
+       var isLoggedIn = document.querySelector('#my-id');
+         var twitId = tag.parentNode.querySelector('.twit-id').value;
+         if (isLoggedIn) {
+            var xhr = new XMLHttpRequest();
+             xhr.onload = function () {
+               if (xhr.status === 200) {
+                 location.reload();
+               } else {
+                 console.error(xhr.responseText);
+               }
+             };
+             xhr.open('POST', '/post/' + twitId + '/unLike');
+             xhr.send();
+           }
+         })
+       });
+   

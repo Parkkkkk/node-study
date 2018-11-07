@@ -71,29 +71,6 @@ router.post('/', isLoggedIn, upload2.none(), async ( req, res, next) => {
     }
 });
 
-
-router.get('/', (req, res, next) => {
-    Post.findAll ({
-        include : {
-            model : User,
-            attributes : ['id', 'nick'],
-        },
-        order : [[ 'createdAt', 'DESC ']],
-    })
-        .then((posts) => {
-            res.render('main', {
-                title : 'NodeBird',
-                twits: posts,
-                user: req.user,
-                loginError: req.flash('loginError'),
-            });
-        })
-        .catch((error) => {
-            console.error(error);
-            next(error);
-        });
-});
-
 router.get('/hashtag' , async ( req, res, next ) => {
     const query = req.query.hashtag;
     if (!query) {
@@ -114,6 +91,29 @@ router.get('/hashtag' , async ( req, res, next ) => {
         console.error(error);
         return next(error);
     }
+});
+
+router.post('/:id/Like', isLoggedIn , async ( req, res, next) => {
+        try {
+          const post = await Post.find({ where: { id: req.params.id } });
+          await post.addLike(req.user.id);
+          res.send('success');
+        } catch (error) {
+          console.error(error);
+          next(error);
+        }
+});
+      
+
+router.post('/:id/unLike', isLoggedIn, async ( req, res, next) => {
+        try {
+            const post = await Post.find({ where: { id: req.params.id } });
+            await post.removeLike(req.user.id);
+            res.send('success');
+        } catch (error) {
+            console.error(error);
+            next(error);
+        } 
 });
 
 

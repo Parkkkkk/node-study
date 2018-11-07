@@ -8,6 +8,7 @@ router.get('/profile', isLoggedIn, (req, res) => {
   res.render('profile', { title: '내 정보 - NodeBird', user: req.user });
 });
 
+
 router.get('/join', isNotLoggedIn, (req, res) => {
   res.render('join', {
     title: '회원가입 - NodeBird',
@@ -18,11 +19,14 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 
 router.get('/', (req, res, next) => {
   Post.findAll({
-    include: {
+    include: [{
       model: User,
       attributes: ['id', 'nick'],
-    },
-    order: [['createdAt', 'DESC']],
+    }, {
+      model : User,
+      attributes :['id', 'nick'],
+      as : 'Liker',
+    }], 
   })
     .then((posts) => {
       res.render('main', {
