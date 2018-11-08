@@ -19,14 +19,10 @@ router.get('/join', isNotLoggedIn, (req, res) => {
 
 router.get('/', (req, res, next) => {
   Post.findAll({
-    include: [{
+    include: {
       model: User,
       attributes: ['id', 'nick'],
-    }, {
-      model : User,
-      attributes :['id', 'nick'],
-      as : 'Liker',
-    }], 
+    }
   })
     .then((posts) => {
       res.render('main', {

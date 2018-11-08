@@ -71,6 +71,17 @@ router.post('/', isLoggedIn, upload2.none(), async ( req, res, next) => {
     }
 });
 
+router.delete('/:id' , isLoggedIn , async ( req, res, next) => {
+    try {
+        await Post.destroy({ wehre : { id : req.params.id, userId : req.user.id }})
+        res.send('success');
+
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+})
+
 router.get('/hashtag' , async ( req, res, next ) => {
     const query = req.query.hashtag;
     if (!query) {
@@ -105,7 +116,7 @@ router.post('/:id/Like', isLoggedIn , async ( req, res, next) => {
 });
       
 
-router.post('/:id/unLike', isLoggedIn, async ( req, res, next) => {
+router.delete('/:id/Like', isLoggedIn, async ( req, res, next) => {
         try {
             const post = await Post.find({ where: { id: req.params.id } });
             await post.removeLike(req.user.id);

@@ -24,11 +24,6 @@ block content
           input.twit-id(type='hidden' value=twit.id)
           .twit-author= twit.user.nick
           -const follow = user && user.Followings.map(f => f.id).includes(twit.user.id);
-          -const like = user && twit && twit.Liker.map(l => l.id).includes(user.id);
-          if user && !like
-            button.twit-Like 좋아요ß
-          else if user && like
-            button.twit-unLike 좋아요 취소
           if user && user.id !== twit.user.id && !follow
             button.twit-follow 팔로우 하기
           else if user && user.id !== twit.user.id && follow
@@ -37,6 +32,12 @@ block content
           if twit.img
             .twit-img
               img(src=twit.img alt='섬네일')
+          if user && !like
+            button.twit-Like 좋아요
+          else if user && like
+            button.twit-unLike 좋아요 취소
+          if user && user.id === twit.user.id
+            button.delete 게시글 삭제
   script.
     if (document.getElementById('img')) {
       document.getElementById('img').addEventListener('change', function (e) {
@@ -135,9 +136,33 @@ block content
                  console.error(xhr.responseText);
                }
              };
-             xhr.open('POST', '/post/' + twitId + '/unLike');
+             xhr.open('DELETE', '/post/' + twitId + '/Like');
              xhr.send();
            }
          })
        });
+    [].forEach.call(document.querySelectorAll('.delete'), function (tag) {
+      tag.addEventListener('click', function () {
+        var isLoggedIn = document.querySelector('#my-id');
+        var twitId = tag.parentNode.querySelector('.twit-id').value;
+        if (isLoggedIn) {
+          var userId = tag.parentNode.querySelector('.twit-user-id').value;
+          var myId = isLoggedIn.value;
+          if (userId !== myId) {
+            if (confirm('게시글을 삭제 하시겠습니까?')) {
+              var xhr = new XMLHttpRequest();
+              xhr.onload = function () {
+                if (xhr.status === 200) {
+                  location.reload();
+                } else {
+                  console.error(xhr.responseText);
+                }
+              };
+              xhr.open('DELETE', '/post/' + userId);
+              xhr.send();
+            }
+          }
+        }
+      });
+    });
    
