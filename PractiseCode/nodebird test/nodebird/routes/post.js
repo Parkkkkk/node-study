@@ -71,11 +71,10 @@ router.post('/', isLoggedIn, upload2.none(), async ( req, res, next) => {
     }
 });
 
-router.delete('/:id' , isLoggedIn , async ( req, res, next) => {
+router.delete('/:id' , async ( req, res, next) => {
     try {
-        await Post.destroy({ wehre : { id : req.params.id, userId : req.user.id }})
+        await Post.destroy({ where : { id : req.params.id, userId : req.user.id }})
         res.send('success');
-
     } catch (error) {
         console.error(error);
         next(error);
