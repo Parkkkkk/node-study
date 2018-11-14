@@ -21,7 +21,7 @@ router.get('/' , (req, res, next) => {
         });
 });
 
-router.post('/domian', (req, res, next) => {
+router.post('/domain', (req, res, next) => {
     Domain.create({
         userId : req.user.id,
         host : req.body.host,

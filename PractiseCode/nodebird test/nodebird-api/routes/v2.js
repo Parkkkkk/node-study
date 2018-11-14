@@ -101,4 +101,20 @@ router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async (req, res) =>
   }
 });
 
+router.get('/follower' , verifyToken ,apiLimiter , async ( req, res ) => {
+  User.findAll({ where : req.followers.nick});
+  res.json({
+    code : 200,
+    payload : get,
+  });
+});
+
+router.get('/following', verifyToken, apiLimiter, async ( req, res ) => {
+  User.findAll({ where : req.followings.nick});
+  res.json({
+    code : 200,
+    payload : get,
+  });
+});
+
 module.exports = router;
