@@ -101,20 +101,20 @@ router.get('/posts/hashtag/:title', verifyToken, apiLimiter, async (req, res) =>
   }
 });
 
-router.get('/follower' , verifyToken ,apiLimiter , async ( req, res ) => {
-  User.findAll({ where : req.followers.nick});
-  res.json({
-    code : 200,
-    payload : get,
-  });
-});
-
-router.get('/following', verifyToken, apiLimiter, async ( req, res ) => {
-  User.findAll({ where : req.followings.nick});
-  res.json({
-    code : 200,
-    payload : get,
-  });
-});
+router.get('/follow' , verifyToken , async( req, res ) => {
+  try {
+    const user = await User.find({ where : { id : req.decoded.id }});
+    const follower = await user.getFollowers({ attributes : ['id', 'nick']});
+    const following = await user.getFollowings({ attributes : ['id', 'nick']});
+    return res.json({
+      code : 200,
+      follower,
+      following,
+    })
+  } catch(error) {
+    console.error(error);
+    next(error);
+  } 
+})
 
 module.exports = router;
