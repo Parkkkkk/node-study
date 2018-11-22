@@ -34,7 +34,6 @@ block content
     var socket = io.connect('http://localhost:8005/chat', {
       path: '/socket.io'
     });
-    
     socket.on('join', function (data) {
       var div = document.createElement('div');
       div.classList.add('system');
@@ -43,7 +42,6 @@ block content
       div.appendChild(chat);
       document.querySelector('#chat-list').appendChild(div);
     });
-
     socket.on('exit', function (data) {
       var div = document.createElement('div');
       div.classList.add('system');
@@ -52,18 +50,17 @@ block content
       div.appendChild(chat);
       document.querySelector('#chat-list').appendChild(div);
     });
-
-    socket.on('chat', function(data) {
-      var div = document.createElenet('div');
-      if ( data.user === '#{user}') {
+    socket.on('chat', function (data) {
+      var div = document.createElement('div');
+      if (data.user === '#{user}') {
         div.classList.add('mine');
       } else {
         div.classList.add('other');
       }
       var name = document.createElement('div');
       name.textContent = data.user;
-      div.appendChiled(name);
-      if ( data.chat ) {
+      div.appendChild(name);
+      if (data.chat) {
         var chat = document.createElement('div');
         chat.textContent = data.chat;
         div.appendChild(chat);
@@ -73,38 +70,36 @@ block content
         div.appendChild(gif);
       }
       div.style.color = data.user;
-      document.querySelector('#chat-list').appendchild(div);
+      document.querySelector('#chat-list').appendChild(div);
     });
     document.querySelector('#chat-form').addEventListener('submit', function (e) {
       e.preventDefault();
       if (e.target.chat.value) {
         var xhr = new XMLHttpRequest();
         xhr.onload = function () {
-          if ( xhr.status ===200) {
+          if (xhr.status === 200) {
             e.target.chat.value = '';
           } else {
             console.error(xhr.responseText);
           }
         };
-        xhr.opne('POST', '/room/#{room._id}/chat');
+        xhr.open('POST', '/room/#{room._id}/chat');
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify ({ chat : this.chat.value}));
+        xhr.send(JSON.stringify({ chat: this.chat.value }));
       }
     });
-    
-    document.querySelector('#gif').addEventListener('change', fucntion (e) {
+    document.querySelector('#gif').addEventListener('change', function (e) {
       var formData = new FormData();
       var xhr = new XMLHttpRequest();
       console.log(e.target.files);
       formData.append('gif', e.target.files[0]);
-      xhr.onload = funcitno () {
-        if(xhr.status === 200) {
+      xhr.onload = function () {
+        if (xhr.status === 200) {
           e.target.file = null;
         } else {
-          conosole.error(xhr.responseText);
+          console.error(xhr.responseText);
         }
       };
       xhr.open('POST', '/room/#{room._id}/gif');
       xhr.send(formData);
-    })
-
+    });
