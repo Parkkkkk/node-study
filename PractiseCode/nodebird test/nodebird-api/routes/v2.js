@@ -35,7 +35,7 @@ router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;
   try {
     const domain = await Domain.find({
-      where: { clientSecret },
+      where: { frontSecret : clientSecret },
       include: {
         model: User,
         attribute: ['nick', 'id'],

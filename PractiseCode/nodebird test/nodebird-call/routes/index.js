@@ -18,6 +18,8 @@ const request = async (req, api) => {
   } catch (error) {
     console.error(error);
     if (error.response.status < 500) { // 410이나 419처럼 의도된 에러면 발생
+      delete req.session.jwt;
+      requset(rea, api);
       return error.response;
     }
     throw error;
@@ -63,7 +65,7 @@ router.get('/follow' , async ( req, res , next) => {
 
 
 router.get('/', (req, res) => {
-  res.render('main', { key: process.env.CLIENT_SECRET });
+  res.render('main', { key: process.env.FRONT_SECRET });
 });
 
 module.exports = router;
