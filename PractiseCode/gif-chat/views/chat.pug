@@ -5,7 +5,10 @@ block content
   a#exit-btn(href='/') 방 나가기
   #number
   | 참여자 수 : 
-  #number-count= number
+  span#number-count= number
+  #owner
+  | 방장 : 
+    span#room-owner(style='color:' + room.owner) = room.owner
   fieldset
     legend 채팅 내용
     #chat-list
@@ -64,6 +67,26 @@ block content
       }
       var name = document.createElement('div');
       name.textContent = data.user;
+      name.className = 'chat-user';
+      
+      //특정 유저에게 귓속말 보내기
+      if (data.user !== '#{user}'){
+      var dm = document.createElement('button')
+      dm.textContent = '귓속말';
+      dm.className = 'dm';
+      dm.dataset.socket = data.socket;
+      dm.addEventListener('click', sendDM);
+      name.appendChild(dm);
+      }
+      //강퇴하기
+      var banbtn = document.createElement('button')
+      banbtn.textContent = '강퇴';
+      banbtn.className = 'ban';
+      banbtn.dataset.socket = data.socket;
+      banbtn.addEventListener('click', ban);
+      name.appendChild(banbtn);
+
+
       div.appendChild(name);
       if (data.chat) {
         var chat = document.createElement('div');
@@ -90,7 +113,7 @@ block content
         };
         xhr.open('POST', '/room/#{room._id}/chat');
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({ chat: this.chat.value }));
+        xhr.send(JSON.stringify({ chat: this.chat.value, sid: socket.id }));
       }
     });
     document.querySelector('#gif').addEventListener('change', function (e) {
@@ -107,4 +130,38 @@ block content
       };
       xhr.open('POST', '/room/#{room._id}/gif');
       xhr.send(formData);
+    });
+    // 특정 유저에게 귓속말 보내기 
+    var sendDM = function(e) {
+      var id = e.target.dataset.socket;
+      var prompt = window.prompt('귓속말을 입력하세요');
+      socket.emit('dm', {target : id , msg : prompt, from : '#{user}'})
+    };
+
+    Array.prototype.forEach.call(document.quertSelectorAll('.dm'), function {
+      el.addEventListener('click', sendDM);
+    });
+
+    socket.on('dm', fucntion (data) => {
+      alert(data.from + '님에게서 귓속말이 도착했습니다 :' + data.msg);
+    });
+
+    // 방장권한으로 강퇴하기
+    function ban(e) {
+      var id = e.target.dataset.socket;
+      var name = e.target.textContent;
+      var owner = document.getElementById('room-owner').textContent;
+      console.log('#{user}', owner);
+      if ('#{user}' === owner && name!==owner) {
+        if (confirm(`${name}를 강퇴하시겠습니까?`)) {
+          socket.emit('ban', { id });
+        }
+      }
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.ban'), function {
+      el.addEventListener('click', ban);
+    });
+    socket.on('ban', function () {
+      alert('강퇴되었습니다.');
+      location.href = '/';
     });

@@ -53,6 +53,15 @@ module.exports = (server, app, sessionMiddleware) => {
         });
       }
     });
+
+    // 특정 유저에게 귓속말 보내기
+    socket.on('dm', (data) => {
+      socket.to(data.target).emit('dm', data);
+    });
+    // 강퇴하기
+    socket.on('ban', (data) => {
+      socket.to(data.id).emit('ban');
+    });
   });
 };
 
