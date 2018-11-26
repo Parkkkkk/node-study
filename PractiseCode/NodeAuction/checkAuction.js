@@ -2,16 +2,14 @@ const { Good, Auction , User, sequelize } = require('./models');
 
 module.exports = async () => {
     try {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1 );
-        const targets = await Godd.findAll({
-            where : {
-                soldId : null,
-                createAt : { $lte : yesterday },
-            },
+        const targets = await Good.findAll({
+            where : {soldId : null},
         });
 
         targets.forEach(async (target) => {
+            const end = new date(target.createdAt);
+            end.setHours(end.getHours() + target.end);
+            if ( new Date() > end) {
             const success = await Auction.find({
                 where : { goodId : target.id},
                 order : [['bid', 'DESC']],
@@ -22,9 +20,9 @@ module.exports = async () => {
             }, {
                 where : { id : success.userId },
             });
+          }
         });
     } catch(error) {
         console.log(error);
-        next(error);
     }
 };

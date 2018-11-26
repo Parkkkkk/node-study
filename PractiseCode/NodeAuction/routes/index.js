@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const scheduel = require('node-schedule');
+const schedule = require('node-schedule');
 
 const { Good, Auction, User, sequelize } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
@@ -63,23 +63,24 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
     const good = await Good.create({
       ownerId: req.user.id,
       name,
+      end : req.body.end,
       img: req.file.filename,
       price,
     });
     const end = new Date();
-    end.setDate(end.getDate() + 1);
-    schedule.scheduledJob(end, async() => {
-        const success = await Auction.find({
-            where : { goodId : good.id},
-            order: [['bid' , 'DESC']],
-        });
-        await Good.update({ soldId : success.userId}, { where : { id : good.id}});
-        await User.update({
-            money : sequelize.literal(`money - ${success.bid}`),
-            // { column : sequelize.literal(column - number)} 해당 column을 number만큼 빼준다
-        }, {
-            where : { id : success.userId},
-        });
+    end.setDate(end.getHours() + 1); // 하루 뒤
+    schedule.scheduleJob(end, async () => {
+      const success = await Auction.find({
+        where: { goodId: good.id },
+        order: [['bid', 'DESC']],
+      });
+      await Good.update({ soldId: success.userId }, { where: { id: good.id } });
+      await User.update({
+        money: sequelize.literal(`money - ${success.bid}`),
+     // { column : sequelize.literal(column - number)} 해당 column을 number만큼 빼준다
+      }, {
+        where: { id: success.userId },
+      });
     });
     res.redirect('/');
   } catch (error) {
@@ -87,6 +88,7 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
     next(error);
   }
 });
+
 
 router.get('/good/:id', isLoggedIn, async (req, res, next) => {
   try {
@@ -135,6 +137,10 @@ router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
     if (good.auctions[0] && good.auctions[0].bid >= bid) {
       return res.status(403).send('이전 입찰가보다 높아야 합니다');
     }
+    // 등록자는 입찰을 못하게
+    if (good.ownerId === req.user.id){
+      return res.status(403).send('경매 등록자는 입찰할 수 없습니다.');
+    }
     const result = await Auction.create({
       bid,
       msg,
@@ -155,7 +161,7 @@ router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
 
 router.get('/list', isLoggedIn, async(req, res, next) => {
     try {
-        const goods = await Godd.findAll({
+        const goods = await Good.findAll({
             where : { soldId : req.user.id},
             include : { model : Auction },
             order : [[{ model : Auction }, 'bid', 'DESC']],
