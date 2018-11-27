@@ -13,7 +13,8 @@ const googleMapsClient = googleMaps.createClient({
 router.get('/', async( req, res, next) => {
     try {
         const favorites = await Favorite.find({});
-        res.render('index', {results : favorites});
+        const historys = await History.find({}).limit(5).sort('-createAt');
+        res.render('index', {results : favorites , history : historys});
     } catch(error) {
         console.error(error);
         next(error);
@@ -37,6 +38,7 @@ router.get('/search/:query', async (req, res, next) => {
   const googlePlacesNearby = util.promisify(googleMapsClient.placesNearby);
   const { lat, lng, type } = req.query;
   try {
+    const historys = await History.find({}).limit(5).sort('-createAt');
     const history = new History({ query: req.params.query });
     await history.save();
     let response;
@@ -59,6 +61,7 @@ router.get('/search/:query', async (req, res, next) => {
       title: `${req.params.query} 검색 결과`,
       results: response.json.results,
       query: req.params.query,
+      history : historys,
     });
   } catch (error) {
     console.error(error);
