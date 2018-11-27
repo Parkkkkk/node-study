@@ -21,7 +21,7 @@ block content
         center: center
       });
       positions.forEach(function (pos) {
-        var maker = new google.maps.Marker({
+        var marker = new google.maps.Marker({
           position: { lat: pos.lat, lng: pos.lng },
           map: map,
           title: pos.name
@@ -40,7 +40,6 @@ block content
             }
           };
           xhr.open('DELETE', '/location/' + pos.id + '/unfavorite');
-          xhr.setRequestHeader('Content-Type', 'application/json');
           xhr.send();
         };
         div.appendChild(h1);
@@ -55,8 +54,8 @@ block content
       });
     }
   script(
-    async
-    defer
-    src="https://maps.googleapis.com/maps/api/js"
-      + "?key=AIzaSyA2Mf-OM12ZClZGGh0n4EZ4-HrcOnX3SnA&callback=initMap"
+   async
+   defer
+   src="https://maps.googleapis.com/maps/api/js"
+     + "?key=AIzaSyA2Mf-OM12ZClZGGh0n4EZ4-HrcOnX3SnA&callback=initMap"
   )

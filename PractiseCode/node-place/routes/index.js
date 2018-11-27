@@ -82,7 +82,7 @@ router.post('/location/:id/favorite', async (req, res, next) => {
 
 router.delete('/location/:id/unfavorite' , async(req, res, next) => {
   try {
-      await Favorite.remove({ placeId : req.params.id });
+    await Favorite.remove({ placeId : req.params.id });
     res.send('ok');
   } catch (error) {
     console.error(error);
