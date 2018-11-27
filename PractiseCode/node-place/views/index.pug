@@ -21,10 +21,36 @@ block content
         center: center
       });
       positions.forEach(function (pos) {
-        new google.maps.Marker({
+        var maker = new google.maps.Marker({
           position: { lat: pos.lat, lng: pos.lng },
           map: map,
           title: pos.name
+        });
+        var div = document.createElement('div');
+        var h1 = document.createElement('h1');
+        var button = document.createElement('button');
+        h1.textContent = pos.name;
+        button.classList.add('btn');
+        button.textContent = '즐겨찾기 삭제';
+        button.onclick = function () {
+          var xhr = new XMLHttpRequest();
+          xhr.onload = function () {
+            if (xhr.status === 200) {
+              location.href = '/';
+            }
+          };
+          xhr.open('DELETE', '/location/' + pos.id + '/unfavorite');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send();
+        };
+        div.appendChild(h1);
+        div.appendChild(button);
+        // InfoWindow 정보창을 띄우는 코드
+        var infowindow = new google.maps.InfoWindow({
+          content: div
+        });
+        marker.addListener('click', function () {
+          infowindow.open(map, marker);
         });
       });
     }
