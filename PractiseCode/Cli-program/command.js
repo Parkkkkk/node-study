@@ -51,6 +51,20 @@ const mkdirp = (dir) => {
   });
 };
 
+const copyfile = (file, directory ,name) => {
+    mkdirp(file);
+    const pathToFile = path.join(file, `${name}.js`);
+    if(exist(pathToFile)) {
+        fs.copyFileSync(pathToFile, directory);
+        console.log(pathToFile, '생성 완료');
+    } else {
+        console.error('해당 파일이 존재하지 않습니다.');
+    }
+};
+
+
+
+
 const makeTemplate = (type , name, directory) => {
     mkdirp(directory);
     if (type === 'html') {
@@ -92,6 +106,18 @@ program
     });
 
 program
+    .command('copyfile [file]')
+    .usage('--copyfile [file]  --path [path] --name <name>')
+    .description('파일을 복사합니다.')
+    .option('-d, --directory [path]', '생성 경로를 입력하세요', '.')
+    .option('-n, --name <name>', '복사할 파일명을 입력하세요.', 'index')
+    .action((file, option) => {
+        copyfile(file , option.directory , option.name);
+        triggerd = true;
+    }) 
+
+
+program
     .command('*', { noHelp: true})
     .action(() => {
         console.log('해당 명령어를 찾을 수 없습니다.');
@@ -102,6 +128,38 @@ program
 program
     .parse(process.argv);
 
+
+    if(!triggerd) {
+        inquirer.prompt([{
+            type : 'input',
+            name : 'file',
+            message : '복사할 파일의 경로를 입력하세요.',
+            default : '.',
+        }, {
+            type : 'input',
+            name : 'name',
+            message : '복사할 파일을 선택하세요',
+            default : 'index.js',
+        },
+        {
+            type : 'input',
+            name : 'directory',
+            message : '파일이 위치할 폴더의 경로를 입력하세요.',
+            default : '.', 
+        }, {
+            type : 'confirm',
+            name : 'confirm',
+            message : '생성하시겠습니까?',
+        }])
+            .then((answers) => {
+                if(answers.confirm) {
+                    copyfile(answers.file,answers.directory,answers.name);
+                    console.log(chalk.rgb(128, 128, 128)('터미널을 종료합니다.'))
+                }
+            });
+    }
+
+    /*
 if(!triggerd) {
     inquirer.prompt([{
         type : 'list',
@@ -129,4 +187,4 @@ if(!triggerd) {
                 console.log(chalk.rgb(128, 128, 128)('터미널을 종료합니다.'))
             }
         });
-}
+}*/
