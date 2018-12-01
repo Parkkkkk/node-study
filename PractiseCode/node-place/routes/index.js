@@ -93,4 +93,20 @@ router.delete('/location/:id/unfavorite' , async(req, res, next) => {
   }
 });
 
+router.get('/directions' , async ( req, res , next) => {
+  try {
+    const { origin, dest } = req.query;
+    const directions = util.promisify(googleMapsClient.directions)
+    const response = await directions({
+      origin,
+      destination : dest,
+    });
+    console.log(response);
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  } 
+})
+
 module.exports = router;
