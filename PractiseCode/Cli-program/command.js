@@ -51,16 +51,13 @@ const mkdirp = (dir) => {
   });
 };
 
-const copyfile = (file, directory ,name) => {
-    mkdirp(file);
-    const pathToFile = path.join(file, `${name}.js`);
-    if(exist(pathToFile)) {
-        fs.copyFileSync(pathToFile, directory);
-        console.log(pathToFile, '생성 완료');
-    } else {
-        console.error('해당 파일이 존재하지 않습니다.');
-    }
-};
+
+
+const copyfile = (file , newpath) => {
+            fs.copyFileSync(file, newpath);
+            console.log(file, '생성 완료');
+          };
+
 
 
 
@@ -106,13 +103,12 @@ program
     });
 
 program
-    .command('copyfile [file]')
-    .usage('--copyfile [file]  --path [path] --name <name>')
+    .command('copyfile <file>')
+    .usage(' --path [path]')
     .description('파일을 복사합니다.')
-    .option('-d, --directory [path]', '생성 경로를 입력하세요', '.')
-    .option('-n, --name <name>', '복사할 파일명을 입력하세요.', 'index')
+    .option('-d, --directory [path]', '저장할 위치', '.')
     .action((file, option) => {
-        copyfile(file , option.directory , option.name);
+        copyfile(file ,  option.directory );
         triggerd = true;
     }) 
 
@@ -133,27 +129,21 @@ program
         inquirer.prompt([{
             type : 'input',
             name : 'file',
-            message : '복사할 파일의 경로를 입력하세요.',
-            default : '.',
-        }, {
-            type : 'input',
-            name : 'name',
-            message : '복사할 파일을 선택하세요',
+            message : '복사할 파일을 입력.',
             default : 'index.js',
-        },
-        {
+        }, {
             type : 'input',
             name : 'directory',
-            message : '파일이 위치할 폴더의 경로를 입력하세요.',
+            message : '저장 위치',
             default : '.', 
-        }, {
+        },{
             type : 'confirm',
             name : 'confirm',
             message : '생성하시겠습니까?',
         }])
             .then((answers) => {
                 if(answers.confirm) {
-                    copyfile(answers.file,answers.directory,answers.name);
+                    copyfile(answers.file,answers.directory);
                     console.log(chalk.rgb(128, 128, 128)('터미널을 종료합니다.'))
                 }
             });
