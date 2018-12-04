@@ -52,13 +52,26 @@ const mkdirp = (dir) => {
 };
 
 
+// 파일 삭제 
+const deletefile = (filepath) => {
+    if(exist(filepath)){
+        fs.unlinkSync(filepath);
+        console.log('successfully delete', filepath);
+    } else {
+        console.log('File not found, so not deleting.');
+    }
+};
 
+// 파일 복사
 const copyfile = (file , newpath) => {
-            fs.copyFileSync(file, newpath);
-            console.log(file, '생성 완료');
-          };
+    if(exist(file)){
+        fs.copyFileSync(file, newpath);
+        console.log(file, '생성 완료');
+    } else {
+        console.log('File not Found, so not copy.')
+    }
 
-
+};
 
 
 
@@ -90,6 +103,7 @@ program
     .version('0.0.1', '-v, --version')
     .usage('[options]');
 
+// 파일 생성
 program
     .command('template <type>')
     .usage('--name <name> --path [path]')
@@ -102,6 +116,8 @@ program
         triggerd = true;
     });
 
+
+// 파일 복사
 program
     .command('copyfile <file>')
     .usage(' --path [path]')
@@ -112,6 +128,14 @@ program
         triggerd = true;
     }) 
 
+// 파일 삭제
+program
+    .command('delete [path]')
+    .description('해당경로의 파일을 삭제합니다.')
+    .action((path) => {
+        deletefile(path);
+        triggerd = true;
+    })
 
 program
     .command('*', { noHelp: true})
@@ -124,9 +148,38 @@ program
 program
     .parse(process.argv);
 
-
     if(!triggerd) {
-        inquirer.prompt([{
+        inquirer.prompt([
+        
+        {
+            type : 'input',
+            name : 'path',
+            message : '삭제할 파일의 경로를 입력하세요.',
+            default : './test',
+        },{
+            type : 'confirm',
+            name : 'confirm',
+            message : '생성하시겠습니까?',
+        }])
+            .then((answers) => {
+                if(answers.confirm) {
+                    deletefile(answers.path);
+                    console.log(chalk.rgb(128, 128, 128)('터미널을 종료합니다.'))
+                }
+            });
+    }
+
+
+
+
+
+
+/* 파일 복사
+    if(!triggerd) {
+        inquirer.prompt([
+        
+        
+        {
             type : 'input',
             name : 'file',
             message : '복사할 파일을 입력하세요',
@@ -148,8 +201,9 @@ program
                 }
             });
     }
+*/
 
-    /*
+/* 파일 생성 cli
 if(!triggerd) {
     inquirer.prompt([{
         type : 'list',
