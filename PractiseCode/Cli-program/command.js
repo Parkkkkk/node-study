@@ -129,13 +129,13 @@ program
         inquirer.prompt([{
             type : 'input',
             name : 'file',
-            message : '복사할 파일을 입력.',
+            message : '복사할 파일을 입력하세요',
             default : 'index.js',
         }, {
             type : 'input',
             name : 'directory',
-            message : '저장 위치',
-            default : '.', 
+            message : '저장할 위치와 새로운 파일명을 입력하세요',
+            default : './noname', 
         },{
             type : 'confirm',
             name : 'confirm',
