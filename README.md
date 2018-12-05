@@ -1,3 +1,2 @@
 # node-study
-~~study~~
-## node-study
+ node study
