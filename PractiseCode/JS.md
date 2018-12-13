@@ -66,7 +66,7 @@ wrapper();
 
 
 
-### Hosting
+### Hoisting
 
 ---
 
