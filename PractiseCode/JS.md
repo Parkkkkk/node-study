@@ -5,13 +5,13 @@
 ---
 
 ```
-	var x = 'park'		    //전역변수
-	function ex() {
-	  var x = 'jin';		//지역변수
-	  x = 'change';
-	}
-	ex()					// x를 바꾸기 시도
-	alert(x);				// 여전히 'park'
+var x = 'park'		    	//전역변수
+function ex() {
+  var x = 'jin';		//지역변수
+  x = 'change';
+}
+ex()				// x를 바꾸기 시도
+alert(x);			// 여전히 'park'
 
 ```
 
@@ -21,11 +21,11 @@
 
 ```
 var x = 'park'
-	function ex() {
-	  x = 'jin';			// var을 선언하지 않음
-	}
-	ex()
-	alert(x);
+function ex() {
+ x = 'jin';			// var을 선언하지 않음
+}
+ex()
+alert(x);
 
 ```
 
