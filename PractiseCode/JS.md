@@ -5,13 +5,13 @@
 ---
 
 ```
-	var x = 'park'		    //전역변수
-	function ex() {
-	  var x = 'jin';		//지역변수
-	  x = 'change';
-	}
-	ex()					// x를 바꾸기 시도
-	alert(x);				// 여전히 'park'
+var x = 'park'		    	//전역변수
+function ex() {
+  var x = 'jin';		//지역변수
+  x = 'change';
+}
+ex()				// x를 바꾸기 시도
+alert(x);			// 여전히 'park'
 
 ```
 
@@ -21,11 +21,11 @@
 
 ```
 var x = 'park'
-	function ex() {
-	  x = 'jin';			// var을 선언하지 않음
-	}
-	ex()
-	alert(x);
+function ex() {
+ x = 'jin';			// var을 선언하지 않음
+}
+ex()
+alert(x);
 
 ```
 
@@ -66,7 +66,7 @@ wrapper();
 
 
 
-### Hosting
+### Hoisting
 
 ---
 
@@ -215,3 +215,7 @@ IIFE 예제 코드를 바로 살펴보면
 
 함수를 괄호로 감싸고 마지막에 ()를 통해서 즉시 호출되는것!
 
+
+참고 <br/>
+<http://chanlee.github.io/categories/Javascript/><br/>
+<https://www.zerocho.com/>
